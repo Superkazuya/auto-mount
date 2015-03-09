@@ -1,0 +1,8 @@
+[Unit]
+Description=Ikazuchi bestest waifu
+
+[Service]
+ExecStart=/usr/bin/python /home/superkazuya/Code/15/ikazuchi/ikazuchi.py
+
+[Install]
+WantedBy=multi-user.target
