@@ -5,17 +5,13 @@ from device import mountable_device
 from check_mtab import get_mtab_entries
 
 #TODO use mtab and fstab
-#TODO notification
 #TODO use logging or syslog
 #TODO what if the system is shut down. probably umount all and delete all directory?
-#Need to run as root
 
 
 
 mounted_device_list = {}
 #not really a list. Key => mount_point
-#GLOBAL_NOTIFICATION_FORMAT_TITLE = r"<font color=blue><b>Dungeon Master</b></font>"
-#GLOBAL_NOTIFICATION_FORMAT_MESSAGE = r"Device <font color=red>{0}</font> has been {1}."
 GLOBAL_NOTIFICATION_FORMAT_TITLE = r'<span color="#ef5800"><big><b>Dungeon Master</b></big></span>'
 GLOBAL_NOTIFICATION_FORMAT_MESSAGE = r'Device <span color="#afd700">{0}</span> has been {1}.'
 
