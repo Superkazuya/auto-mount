@@ -1,0 +1,8 @@
+[Unit]
+Description=Deep Dark Fantasy
+
+[Service]
+ExecStart=/usr/bin/python /home/superkazuya/Code/15/Dungeon/dungeon_master.py
+
+[Install]
+WantedBy=multi-user.target
