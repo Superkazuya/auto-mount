@@ -9,25 +9,29 @@ class mountable_device():
         self.dev = device_instance
         self.label = self.get_label()
         self.uuid = self.get_uuid()
+        self.fstype = self.get_fstype()
         self.mount_point = GLOBAL_MOUNT_PATH
-        self.get_mount_point()
 
-    def get_label(self):
-        if 'ID_FS_LABEL' in self.dev:
-            return self.dev['ID_FS_LABEL']
+    def __get_attr(self, attr):
+        if attr in self.dev:
+            return self.dev[attr]
         return None
+    
+    def get_label(self):
+        return self.__get_attr('ID_FS_LABEL')
 
     def get_uuid(self):
-        if 'ID_FS_UUID' in self.dev:
-            return self.dev['ID_FS_UUID']
-        return None
+        return self.__get_attr('ID_FS_UUID')
+
+    def get_fstype(self):
+        return self.__get_attr('ID_FS_TYPE')
 
     def get_mount_point(self):
         if self.label:
             self.mount_point += self.label
         elif self.uuid:
             self.mount_point += self.uuid
-        elif self.dev['ID_SERIAL']:
+        elif self.__get_attr('ID_SERIAL'):
             self.mount_point += self.dev['ID_SERIAL']
         else:
             raise NameError('No valid name')

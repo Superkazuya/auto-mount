@@ -1,5 +1,8 @@
 import os, subprocess
 
+GLOBAL_UID = 1000
+GLOBAL_GID = 100
+
 def remove_mount_point_directory(self):
     if not os.access(self.mount_point, os.F_OK):
         return True
@@ -30,7 +33,7 @@ def mount_point_chmod(self):
     # if os.access(self.mount_point, os.F_OK):
     #     os.chmod(self.mount_point, 0o755)
     os.chmod(self.mount_point, 0o755)
-    
+    os.chown(self.mount_point, GLOBAL_UID, GLOBAL_GID)
 
 def mount(self):
     """mount this
@@ -39,11 +42,20 @@ def mount(self):
     :rtype: bool
 
     """
-    while not create_mount_point_directory(self):
-        self.__dealwith_name_conflicts()
+    self.get_mount_point()
+    create_mount_point_directory(self)
+    #potential race condition?
+    MS_FSTYPE = ["msdos", "umsdos", "vfat", "ntfs"]
 
-    mount_point_chmod(self)
-    subprocess.check_call(['mount',self.dev['DEVNAME'],self.mount_point])
+    if self.fstype in MS_FSTYPE:
+        para = ['-o', 'uid={0},gid={1},umask=022,utf8'.format(GLOBAL_UID, GLOBAL_GID)]
+        #no space between options!!!
+    else:
+        para = []
+
+    subprocess.check_call(['mount', self.dev['DEVNAME'],self.mount_point] + para)
+    if not self.fstype in MS_FSTYPE:
+        mount_point_chmod(self)
     print('trying to mount {0}'.format(self))
 
     return True

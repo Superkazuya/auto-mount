@@ -3,6 +3,7 @@ import os
 from device import mountable_device
 from check_mtab import get_mtab_entries
 
+#TODO fat fs
 #TODO make this a singleton
 #TODO use mtab and fstab
 #TODO use logging or syslog
@@ -40,17 +41,14 @@ if __name__ == '__main__':
                 mounted_device_list[md.mount_point] = md
         elif action == 'remove':
             md = search_mounted_device_list(device)
-            if md:
-                if md.umount():
-                    mounted_device_list.pop(mounted_dev.mount_point)
+            if md and md.umount():
+                mounted_device_list.pop(md.mount_point)
 
         elif action == 'change' and need_to_mount(device):
             md = search_mounted_device_list(device)
-            if not md:
-                #not our business
-                continue
-            md.umount()
-            md.mount()
+            if md:
+                md.umount()
+                md.mount()
                 
             
                     

@@ -12,7 +12,7 @@ def get_mtab_path():
 def get_mtab_entries():
     """parse the whole mtab
 
-    :returns: a dict of mounted devices, use mount point as key
+    :returns: a dict of mounted devices, uses mount point as key
     :rtype: dict
 
     """
