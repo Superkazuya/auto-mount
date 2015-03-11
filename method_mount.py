@@ -1,7 +1,6 @@
 import os, subprocess
+from local_settings import GLOBAL_UID, GLOBAL_GID
 
-GLOBAL_UID = 1000
-GLOBAL_GID = 100
 
 def remove_mount_point_directory(self):
     if not os.access(self.mount_point, os.F_OK):
@@ -56,7 +55,7 @@ def mount(self):
     subprocess.check_call(['mount', self.dev['DEVNAME'],self.mount_point] + para)
     if not self.fstype in MS_FSTYPE:
         mount_point_chmod(self)
-    print('trying to mount {0}'.format(self))
+    print('{0} mounted'.format(self))
 
     return True
 
@@ -68,5 +67,5 @@ def umount(self):
 
     """
     subprocess.check_call(['umount', '-l', self.mount_point])
-    print('trying to unmount {0}'.format(self))
+    print('unmount {0}'.format(self))
     return remove_mount_point_directory(self)

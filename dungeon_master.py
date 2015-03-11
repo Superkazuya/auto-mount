@@ -3,12 +3,18 @@ import os, sys, fcntl,subprocess
 from gi.repository import Notify
 from device import mountable_device
 from check_mtab import get_mtab_entries
-from notification import show_notification
+from local_settings import GLOBAL_GID, GLOBAL_UID
+
+#sys.path += ['/home/superkazuya/Code/15']
+from root_libnotify.notification import show_notification
 
 #TODO SIGTERM handling
 
 mounted_device_list = {}
 #not really a list. Key => mount_point
+
+GLOBAL_NOTIFICATION_FORMAT_TITLE = r'<span color="#ef5800"><big><b>Dungeon Master</b></big></span>'
+GLOBAL_NOTIFICATION_FORMAT_MESSAGE = r'Device <span color="#afd700">{0}</span> has been {1}.'
 
 def search_mounted_device_list(dev):
     for d in mounted_device_list:
@@ -45,20 +51,20 @@ if __name__ == '__main__':
             md = mountable_device(device)
             if md.mount():
                 mounted_device_list[md.mount_point] = md
-                show_notification(md.mount_point, 'mounted')
+                show_notification(GLOBAL_NOTIFICATION_FORMAT_TITLE, GLOBAL_NOTIFICATION_FORMAT_MESSAGE.format(md.mount_point, 'mounted'), GLOBAL_GID, GLOBAL_UID)
 
         elif action == 'remove':
             md = search_mounted_device_list(device)
             if md and md.umount():
                 mounted_device_list.pop(md.mount_point)
-                show_notification(md.mount_point, 'removed')
+                show_notification(GLOBAL_NOTIFICATION_FORMAT_TITLE, GLOBAL_NOTIFICATION_FORMAT_MESSAGE.format(md.mount_point, 'removed'), GLOBAL_GID, GLOBAL_UID)
 
         elif action == 'change' and need_to_mount(device):
             md = search_mounted_device_list(device)
             if md:
                 md.umount()
                 md.mount()
-                show_notification(md.mount_point, 'changed')
+                show_notification(GLOBAL_NOTIFICATION_FORMAT_TITLE, GLOBAL_NOTIFICATION_FORMAT_MESSAGE.format(md.mount_point, 'changed'), GLOBAL_GID, GLOBAL_UID)
 
     fcntl.lockf(lock_file, fcntl.LOCK_UN)
     lock_file.close()

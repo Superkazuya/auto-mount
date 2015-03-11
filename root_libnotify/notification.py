@@ -1,3 +1,6 @@
+"""This script can be used to send notification to local user desktop as root. 
+
+"""
 import re, os
 from gi.repository import Notify
 
@@ -12,26 +15,32 @@ def get_dbus_session_bus_addr(environ_file):
                 return m.group(1)
         
     
-def show_notification(device, event):
+def show_notification(notification_title = "", notification_message = "", gid = None, uid = None):
     """show notification for an event. 
 
     NOTE: to use libnotify, need to set environment variable DBUS_SESSION_BUS_ADDRESS first.
     You can find this in ~/.dbus/session-bus/
 
-    :param device: device name
-    :param event: event name
+    :param notification_title: The title of the notification you want to send
+    :param notification_message: The message body of the notification you want to send
+    :param gid: group id 
+    :param uid: user id
     :returns: PARENT: child's pid or negative number CHILD: 0
     :rtype: int
 
     """
     child_pid = os.fork()
-    
     if(child_pid != 0):
         return child_pid
+
     #child
-    
-    os.setgid(100)
-    os.setuid(1000)
+    if gid != None:
+        os.setgid(gid)
+    if uid != None:
+        os.setuid(uid)
+
+    del os.environ['HOME'] 
+    #force to use pwd
     file_path = os.path.expanduser(r'~/.dbus/session-bus/')
     tmp = os.listdir(file_path)
     if not tmp:
@@ -44,7 +53,8 @@ def show_notification(device, event):
 
     print(os.environ['DBUS_SESSION_BUS_ADDRESS'])
 
-    notification=Notify.Notification.new(GLOBAL_NOTIFICATION_FORMAT_TITLE, GLOBAL_NOTIFICATION_FORMAT_MESSAGE.format(device, event), "dialog-information")
+    #notification=Notify.Notification.new(GLOBAL_NOTIFICATION_FORMAT_TITLE, GLOBAL_NOTIFICATION_FORMAT_MESSAGE.format(device, event), "dialog-information")
+    notification=Notify.Notification.new(notification_title, notification_message, "dialog-information")
     try:
         notification.show()
     except:
