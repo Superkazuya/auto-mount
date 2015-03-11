@@ -1,4 +1,4 @@
-import pyudev, os, re
+import pyudev, os
 
 def get_mtab_path():
     """stub: get the path of mtab file.
@@ -29,8 +29,7 @@ def get_mtab_entries():
     return dict
 
 def parse_mtab_entry(line):
-    patten = re.compile('\s')
-    li = patten.split(line.strip())
+    li = line.split()
     if len(li) > 1:
         return li[0], li[1]
     

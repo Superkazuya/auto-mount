@@ -1,19 +1,14 @@
 import pyudev
-import os, sys, fcntl
+import os, sys, fcntl,subprocess
 from gi.repository import Notify
 from device import mountable_device
 from check_mtab import get_mtab_entries
+from notification import show_notification
 
-#TODO use mtab and fstab
-#TODO use logging or syslog
-#TODO what if the system is shut down. probably umount all and delete all directory?
-
-
+#TODO SIGTERM handling
 
 mounted_device_list = {}
 #not really a list. Key => mount_point
-GLOBAL_NOTIFICATION_FORMAT_TITLE = r'<span color="#ef5800"><big><b>Dungeon Master</b></big></span>'
-GLOBAL_NOTIFICATION_FORMAT_MESSAGE = r'Device <span color="#afd700">{0}</span> has been {1}.'
 
 def search_mounted_device_list(dev):
     for d in mounted_device_list:
@@ -26,20 +21,6 @@ def need_to_mount(dev):
         if 'ID_FS_USAGE' in dev:
             return True
     return False
-
-def show_notification(device, event):
-    child_pid = os.fork()
-    
-    if(child_pid != 0):
-        return child_pid
-    #child
-    os.setgid(100)
-    os.setuid(1000)
-    notification=Notify.Notification.new(GLOBAL_NOTIFICATION_FORMAT_TITLE, GLOBAL_NOTIFICATION_FORMAT_MESSAGE.format(device, event), "dialog-information")
-    notification.show()
-    os._exit(0)
-    #no exception ignored info
-    
 
 
 if __name__ == '__main__':
