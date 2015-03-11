@@ -5,6 +5,15 @@ GLOBAL_NOTIFICATION_FORMAT_TITLE = r'<span color="#ef5800"><big><b>Dungeon Maste
 GLOBAL_NOTIFICATION_FORMAT_MESSAGE = r'Device <span color="#afd700">{0}</span> has been {1}.'
 
 def get_environ_file(pattern):
+    """get the pid of the first process whose name matches *pattern*. 
+    
+    if the return code of the 'pgrep' command is 1, no file matches that pattern, probably X server is not started yet.
+
+    :param pattern: process name pattern
+    :returns: '/proc/PID_OF_THE_FIRST_PROCESS/environ
+    :rtype: string
+
+    """
     li = []
     try:
         li = subprocess.check_output(['pgrep', pattern]).split()
@@ -29,6 +38,17 @@ def get_dbus_session_bus_addr(environ_file):
         
     
 def show_notification(device, event):
+    """show notification for an event. 
+
+    NOTE: to use libnotify, need to set environment variable DBUS_SESSION_BUS_ADDRESS first.
+    You can find this in ~/.dbus/session-bus/
+
+    :param device: device name
+    :param event: event name
+    :returns: PARENT: child's pid or negative number CHILD: 0
+    :rtype: int
+
+    """
     child_pid = os.fork()
     
     if(child_pid != 0):
