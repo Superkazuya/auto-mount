@@ -5,7 +5,6 @@ from device import mountable_device
 from check_mtab import get_mtab_entries
 from local_settings import GLOBAL_GID, GLOBAL_UID
 
-#sys.path += ['/home/superkazuya/Code/15']
 from root_libnotify.notification import show_notification
 
 #TODO SIGTERM handling
@@ -66,6 +65,7 @@ if __name__ == '__main__':
                 md.mount()
                 show_notification(GLOBAL_NOTIFICATION_FORMAT_TITLE, GLOBAL_NOTIFICATION_FORMAT_MESSAGE.format(md.mount_point, 'changed'), GLOBAL_GID, GLOBAL_UID)
 
+#they are actually useless
     fcntl.lockf(lock_file, fcntl.LOCK_UN)
     lock_file.close()
     os.unlink(LOCK_FILE)
