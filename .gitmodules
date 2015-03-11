@@ -1,0 +1,3 @@
+[submodule "root_libnotify"]
+	path = root_libnotify
+	url = https://github.com/Superkazuya/root_libnotify.git
