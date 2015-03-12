@@ -66,6 +66,14 @@ def umount(self):
     :rtype: 
 
     """
-    subprocess.check_call(['umount', '-l', self.mount_point])
+    try:
+        subprocess.check_call(['umount', '-l', self.mount_point])
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 32:
+            #why would this happen?
+            print("Ah oh, an unexpected error occurred!")
+        else:
+            raise e
+            
     print('unmount {0}'.format(self))
     return remove_mount_point_directory(self)
